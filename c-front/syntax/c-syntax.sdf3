@@ -250,7 +250,8 @@ context-free syntax
   Exp.PreInc    = <++<Exp>> 
   Exp.PreDec    = <--<Exp>> 
   Exp.UnOp      = <<UnaryOp> <Exp>> 
-  Exp.Sizeof    = <sizeof <Exp>> 
+  Exp.Sizeof    = <sizeof(<Exp>)> 
+//  Exp.Sizeof    = <sizeof <Exp>> 
 //  Exp.SizeofT   = <sizeof(<TypeName>)> 
   Exp.Subscript = <<Exp>[<Exp>]> 
   Exp.Call      = <<Exp>(<{Exp ", "}*>)> 
