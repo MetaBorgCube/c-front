@@ -10,7 +10,9 @@ enum color {
   yellow = 3
 };
 
-point newPoint(int x, int y, float color) {
+int xcoord(point *p);
+
+point *newPoint(int x, int y, float color) {
   point *p = malloc(sizeof(point));
   if(p == NULL) 
     exit(-1);
@@ -20,8 +22,22 @@ point newPoint(int x, int y, float color) {
   return p;
 }
 
-int xcoord(point p) {
+int xcoord(point *p) {
   return p->x;
 }
+
+point *translate(point *, int (int, int)) {
+  return NULL;
+}
+
+int toInt(point *p) {
+  return (int)p;
+}
+
+point *toPoint(int p) {
+  return (point *)p;
+}
+
+
 
 
