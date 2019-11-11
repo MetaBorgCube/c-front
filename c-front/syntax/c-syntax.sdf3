@@ -2,7 +2,7 @@ module c-syntax
 
 imports c-lexical
 imports c-preprocessor
-
+  
 context-free syntax
 
   TranslationUnit.TranslationUnit = <
@@ -17,14 +17,23 @@ context-free syntax
     <CompoundStatement>
   > 
   
+//  Declaration.Decl = <
+//    <DeclarationSpecifier+> <{InitDeclarator ", "}*>;
+//  > 
+  
   Declaration.Decl = <
-    <DeclarationSpecifier+> <{InitDeclarator ", "}*>;
+    <DeclarationSpecifiers> <{InitDeclarator ", "}*>;
   > 
   
-  DeclarationSpecifier = StorageClassSpecifier 
+  DeclarationSpecifiers.Specifiers = 
+    DeclarationSpecifierA* TypeSpecifier
+    
+  DeclarationSpecifierA = StorageClassSpecifier  
+  DeclarationSpecifierA = TypeQualifier 
   
-  DeclarationSpecifier = TypeSpecifier 
+  DeclarationSpecifier = StorageClassSpecifier 
   DeclarationSpecifier = TypeQualifier 
+  DeclarationSpecifier = TypeSpecifier 
   
   StorageClassSpecifier.Auto     = <auto> 
   StorageClassSpecifier.Register = <register> 
@@ -43,13 +52,14 @@ context-free syntax
   TypeSpecifier.Unsigned  = <unsigned> 
   TypeSpecifier           = StructOrUnionSpecifier 
   TypeSpecifier           = EnumSpecifier 
+  TypeSpecifier.TypedefName = ID // TypedefName
   
   TypeQualifier.Const     = <const> 
   TypeQualifier.Volatile  = <volatile> 
   
   StructOrUnionSpecifier.StructOrUnion = <
     <StructOrUnion> <ID?> { 
-      <StructDeclaration+> 
+      <{StructDeclaration "\n"}+> 
     }
   > 
   
@@ -81,7 +91,7 @@ context-free syntax
   
   EnumSpecifier.EnumSpec = <
     enum <ID?> { 
-      <{Enumerator ", "}+> 
+      <{Enumerator ",\n"}+> 
     }
   > 
   EnumSpecifier.EnumSpec = <
@@ -89,6 +99,7 @@ context-free syntax
   > 
   
   Enumerator = ID 
+  
   Enumerator.Enumerator = <
     <ID> = <Constant>
   > 
@@ -105,8 +116,12 @@ context-free syntax
   
   ParameterTypeList.ParamList = <<{ParameterDeclaration ", "}+>> 
   ParameterTypeList.ParamListVarArgs = <<{ParameterDeclaration ", "}+> , ...> 
-  ParameterDeclaration.ParamDecl1 = <<DeclarationSpecifier+> <Declarator>> 
-  ParameterDeclaration.ParamDecl2 = <<DeclarationSpecifier+> <AbstractDeclarator?>> 
+  
+//  ParameterDeclaration.ParamDecl1 = <<DeclarationSpecifier+> <Declarator>> 
+//  ParameterDeclaration.ParamDecl2 = <<DeclarationSpecifier+> <AbstractDeclarator?>> 
+  
+  ParameterDeclaration.ParamDecl1 = <<DeclarationSpecifiers> <Declarator>> 
+  ParameterDeclaration.ParamDecl2 = <<DeclarationSpecifiers> <AbstractDeclarator?>> 
   
   Initializer = AssignExp 
   
@@ -123,8 +138,8 @@ context-free syntax
 
   TypeName = ID 
   
-  Pointer.Pointer = <* <TypeQualifier*>> 
-  Pointer.Pointer = <* <TypeQualifier*> <Pointer>> 
+  Pointer.Pointer = <*<TypeQualifier*>> 
+  Pointer.Pointer = <*<TypeQualifier*> <Pointer>>
   
   AbstractDeclarator = Pointer 
   
@@ -142,9 +157,16 @@ context-free syntax
     <DirectAbstractDeclarator?>(<ParameterTypeList?>)
   > 
   
-  Statement.Label   = <<ID> : <Statement>> 
-  Statement.Case    = <case <ConstExp> : <Statement>> 
-  Statement.Default = <default : <Statement>> 
+  Statement.Label = <
+    <ID> : <Statement>
+  > 
+  Statement.Case = <
+    case <ConstExp> : 
+      <Statement>
+  > 
+  Statement.Default = <
+    default : <Statement>
+  > 
   
   Statement.Exp = <<Exp>;> 
   Statement.Nop = <;> 
@@ -191,9 +213,8 @@ context-free syntax
   Statement.Break    = <break;> 
   Statement.Return   = <return <Exp?>;> 
 
-//context-free syntax
-//
-//  Start = Exp 
+context-free priorities
+  Statement.IfElse > Statement.If
 
 sorts Exp
 context-free syntax
@@ -230,7 +251,7 @@ context-free syntax
   Exp.PreDec    = <--<Exp>> 
   Exp.UnOp      = <<UnaryOp> <Exp>> 
   Exp.Sizeof    = <sizeof <Exp>> 
-  Exp.SizeofT   = <sizeof(<TypeName>)> 
+//  Exp.SizeofT   = <sizeof(<TypeName>)> 
   Exp.Subscript = <<Exp>[<Exp>]> 
   Exp.Call      = <<Exp>(<{Exp ", "}*>)> 
   Exp.Proj      = <<Exp>.<ID>> 
@@ -265,7 +286,7 @@ context-free priorities
    Exp.PreDec
    Exp.UnOp
    Exp.Sizeof
-   Exp.SizeofT
+//   Exp.SizeofT
   } 
   > Exp.Cast 
   > {left :
@@ -349,4 +370,8 @@ lexical restrictions
 
   "+" -/- [\+]
   "-" -/- [\-]
+
+template options
+
+  ID = keyword {reject}
   

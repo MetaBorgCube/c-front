@@ -17,7 +17,9 @@ debug:
 language:
   sdf:
     pretty-print: c-front
-    sdf2table: c
+    sdf2table: java
+    check-priorities: true
+    check-overlap: false
     placeholder:
       prefix: "$"
   stratego:

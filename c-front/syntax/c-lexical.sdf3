@@ -5,17 +5,14 @@ context-free syntax
   Constant = IntegerConstant 
   Constant = CharacterConstant 
   Constant = FloatingConstant 
-  Constant = EnumerationConstant 
+//  Constant = EnumerationConstant 
   
-  EnumerationConstant.Enum = ID
+//  EnumerationConstant.Enum = ID
 
 lexical syntax // identifiers
   ID = [a-zA-Z\_] [a-zA-Z0-9\_]* 
 lexical restrictions
   ID -/- [a-zA-Z0-9\_]
-template options
-  ID = keyword {reject}
-
  
 context-free syntax // integer constants
   IntegerConstant.DecInt = DecInt 
