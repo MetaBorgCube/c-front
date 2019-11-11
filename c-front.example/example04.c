@@ -11,8 +11,7 @@ enum color {
 };
 
 point newPoint(int x, int y, float color) {
-  point *p;
-  p = malloc(sizeof(point));
+  point *p = malloc(sizeof(point));
   if(p == NULL) 
     exit(-1);
   p->x = x;
