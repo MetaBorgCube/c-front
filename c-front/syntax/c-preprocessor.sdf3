@@ -1,0 +1,53 @@
+module c-preprocessor
+
+imports c-lexical
+
+lexical syntax
+  WS        = [\ \t]*
+  Token     = TokenChar+
+  TokenChar = ~[\ \t\r\n\\]
+  TokenChar = Slash
+  Slash     = [\\]
+  
+  TokenSeqOneLine = Token ([\ \t]+ Token)*
+  
+  TokenSequence = TokenSeqOneLine (WS [\\] [\n] WS TokenSeqOneLine)*
+  
+  FileName1 = ~[\<\>\n]+
+  
+  FileName2 = ~[\<\"\n]+
+  
+lexical restrictions
+  Token -/- ~[\ \t\r\n]
+  Slash -/- [\n]
+  TokenSequence -/- ~[\n]
+  
+context-free syntax
+
+  ExternalDeclaration = PreprocessorDirective
+  
+context-free restrictions
+
+  PreprocessorDirective -/- ~[\n]
+  
+syntax
+
+  PreprocessorDirective-CF.Define = 
+    "#" WS-LEX "define" WS-LEX ID-LEX WS-LEX TokenSequence-LEX
+
+  PreprocessorDirective-CF.Define = 
+    "#" WS-LEX "define" WS-LEX ID-LEX "(" WS-LEX {ID ","}* WS-LEX ")" WS-LEX TokenSequence-LEX
+  
+  PreprocessorDirective-CF.Undef = 
+    "#" WS-LEX "undef" WS-LEX ID-LEX 
+    
+  PreprocessorDirective-CF.Include1 =
+    "#" WS-LEX "include"  WS-LEX "<" FileName1-LEX ">"
+    
+  PreprocessorDirective-CF.Include2 =
+    "#" WS-LEX "include"  WS-LEX "\"" FileName2-LEX "\""
+    
+  PreprocessorDirective-CF.Include3 =
+    "#" WS-LEX "include"  WS-LEX TokenSequence
+    
+    

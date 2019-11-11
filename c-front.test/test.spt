@@ -1,0 +1,9 @@
+module test
+
+language c-front
+
+test parse [[
+  int main() {
+    return 0;
+  }
+]] parse succeeds

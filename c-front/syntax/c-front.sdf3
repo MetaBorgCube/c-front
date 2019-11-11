@@ -1,0 +1,7 @@
+module c-front
+
+imports c-syntax
+imports c-lexical
+imports c-preprocessor
+
+context-free start-symbols TranslationUnit
